@@ -15,32 +15,78 @@ Este proyecto es una API RESTful construida con Node.js para una tienda ficticia
 
 ---
 
-## 📦 Instalación
 
-Sigue estos pasos para ejecutar el proyecto en tu entorno local:
+# Cómo ejecutar el proyecto My Precious
 
-### 1. Clonar el repositorio
+## Requisitos
+
+- Node.js v16 o superior instalado
+- PostgreSQL instalado y corriendo
+
+---
+
+## Pasos para la ejecución
+
+### 1. Clona el proyecto y entra a la carpeta raíz
+---
+
+### 2. Crea la base de datos y la tabla manualmente (solo una vez)
+
+1. Abre la consola de comandos (CMD o PowerShell).
+
+2. Conéctate a PostgreSQL reemplazando `TU_USUARIO` por tu usuario real (por ejemplo, `postgres`):
 
 ```bash
-git clone https://github.com/jedt89/Backend-Tienda-de-joyas-My-precious.git
-cd Backend-Tienda-de-joyas-My-precious
-npm install
+psql -U TU_USUARIO -d postgres
+```
 
-## 2. Crea un archivo .env en la raíz del proyecto con tus credenciales de base de datos PostgreSQL:
+3. Ingresa tu contraseña cuando se te solicite.
 
-DB_USER=tu_usuario
-DB_PASSWORD=tu_contraseña
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=my_precious
+4. Dentro del prompt de PostgreSQL (deberías ver `postgres=#`), ejecuta estas 2 líneas una por una:
 
+```sql
+CREATE DATABASE joyas;
 
-### 3. Importa la base de datos
+\connect joyas
+```
 
-Utiliza el archivo script.sql incluido en el proyecto para crear la base de datos y poblarla con datos de ejemplo. Puedes hacerlo desde PgAdmin, DBeaver o usando la CLI de PostgreSQL:
+5. Luego, crea la tabla `inventario` pegando este bloque:
 
-psql -U tu_usuario -d my_precious -f script.sql
+```sql
+CREATE TABLE inventario (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  categoria VARCHAR(50) NOT NULL,
+  metal VARCHAR(50) NOT NULL,
+  precio NUMERIC(10, 2) NOT NULL CHECK (precio >= 0),
+  stock INTEGER NOT NULL CHECK (stock >= 0),
+  descripcion TEXT
+);
 
-npm start
+-- Insertar datos de ejemplo para pruebas
+INSERT INTO inventario (nombre, categoria, metal, precio, stock, descripcion) VALUES
+('Anillo de Oro 18k', 'Anillos', 'Oro', 250.00, 10, 'Anillo de oro 18k con diamante brillante'),
+('Collar de Plata', 'Collares', 'Plata', 180.00, 15, 'Collar de plata con diseño elegante'),
+('Pulsera de Cuero', 'Pulseras', 'Cuero', 75.50, 20, 'Pulsera hecha de cuero genuino'),
+('Aretes de Plata', 'Aretes', 'Plata', 120.00, 8, 'Aretes de plata con diseño clásico'),
+('Anillo de Plata', 'Anillos', 'Plata', 150.00, 5, 'Anillo de plata con piedra semipreciosa'),
+('Collar de Oro', 'Collares', 'Oro', 300.00, 12, 'Collar de oro 14k con colgante');
+```
 
-###### El servidor quedará disponible en: http://localhost:3000
+✅ ¡Listo! La base de datos `joyas` y la tabla `inventario` ya están creadas.
+
+---
+
+### 3. Configura el archivo `.env`
+
+Edita el archivo `.env` ubicado en la raiz y reemplaza `DB_PASS` con tus credenciales de PostgreSQL:
+
+### 4. Instala las dependencias y ejecuta el proyecto
+
+Ejecuta este comando en la raíz del proyecto para instalar todas las dependencias y levantar el servidor y el cliente:
+
+```bash
+npm install && npm run start
+```
+
+✅ ¡Listo! El proyecto ya está disponible.
